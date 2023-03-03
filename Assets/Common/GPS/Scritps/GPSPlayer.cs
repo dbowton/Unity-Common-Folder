@@ -18,6 +18,12 @@ public class GPSPlayer : MonoBehaviour
         Cursor.visible = false;
 	}
 
+	private void OnDestroy()
+	{
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
+	}
+
 	void Update()
     {
 		Vector3 movement = Vector3.zero;

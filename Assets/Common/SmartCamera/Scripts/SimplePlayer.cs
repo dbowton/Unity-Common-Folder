@@ -38,5 +38,8 @@ public class SimplePlayer : MonoBehaviour
 	private void OnDestroy()
 	{
 		CameraGameManager.instance.player = null;
+
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
 	}
 }

@@ -6,8 +6,6 @@ public class ObjectiveManager : MonoBehaviour
 	public ObjectiveData Data { get { return data; } }
 	public static ObjectiveManager instance = null;
 
-	public GameObject canvas;
-
 	private void Awake()
 	{
 		if (instance == null)

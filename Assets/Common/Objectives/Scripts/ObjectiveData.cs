@@ -5,8 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ObjectiveData", menuName = "Data/Objectives/ObjectiveData")]
 public class ObjectiveData : ScriptableObject
 {
-	[SerializeField] GameObject objectivePanelPrefab;
-	private GameObject objectivePanel;
+	[SerializeField] GameObject objectiveUIPrefab;
+	private GameObject objectiveUI;
 
 	[System.Serializable]
 	public class Objective
@@ -51,14 +51,14 @@ public class ObjectiveData : ScriptableObject
 
 					if(o.sprite != null) 
 					{
-						Destroy(objectivePanel);
+						Destroy(objectiveUI);
 
-						objectivePanel = Instantiate(objectivePanelPrefab, ObjectiveManager.instance.canvas.transform);
-						ObjectivePrefabInfo info = objectivePanel.GetComponent<ObjectivePrefabInfo>();
+						objectiveUI = Instantiate(objectiveUIPrefab);
+						ObjectivePrefabInfo info = objectiveUI.GetComponent<ObjectivePrefabInfo>();
 						info.image.sprite = o.sprite;
 						info.title.text = o.displayName;
 						info.description.text = o.description;
-						Destroy(objectivePanel, 5f);
+						Destroy(objectiveUI, 5f);
 					}
 				}
 			}

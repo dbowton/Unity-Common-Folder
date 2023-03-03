@@ -9,35 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68cc7f4d04dd56a4db1ab072ce2489f2, type: 3}
+  m_Script: {fileID: 11500000, guid: a8a630fb80fe5144cb29d769642a34b1, type: 3}
   m_Name: PlayerKeys
   m_EditorClassIdentifier: 
   registeredKeys:
-  - reference: Equip
-    key: 101
-  - reference: Reload
-    key: 32
-  - reference: Drop
-    key: 32
   - reference: Sprint
-    key: 32
-  - reference: ToggleSprint
-    key: 32
+    key: 304
   - reference: Crouch
-    key: 32
-  - reference: ToggleCrouch
-    key: 32
+    key: 306
   - reference: Menu
-    key: 32
-  - reference: Pause
-    key: 32
-  - reference: Jump
-    key: 32
-  - reference: Weapon1
-    key: 32
-  - reference: Weapon2
-    key: 32
-  - reference: Weapon3
-    key: 32
-  - reference: Weapon4
-    key: 32
+    key: 9
+  - reference: Reload
+    key: 114
+  - reference: Grenade
+    key: 102
+  - reference: Ultimate
+    key: 113

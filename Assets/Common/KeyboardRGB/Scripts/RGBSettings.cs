@@ -87,15 +87,6 @@ public class RGBSettings : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Escape))
-		{
-#if UNITY_EDITOR
-			UnityEditor.EditorApplication.isPlaying = false;
-#else
-				Application.Quit();
-#endif
-		}
-
 		RGBPlayer.Instance.controller.SetButtonColor(Colors.charcoal);
 
 		if (RGBPlayer.Instance.controller != null && Input.GetKeyDown(KeyCode.RightArrow))

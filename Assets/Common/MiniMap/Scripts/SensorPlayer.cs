@@ -15,6 +15,12 @@ public class SensorPlayer : MonoBehaviour
 		controller = GetComponent<CharacterController>();
 	}
 
+	private void OnDestroy()
+	{
+		Cursor.lockState = CursorLockMode.None;
+	}
+
+
 	private void Update()
 	{
 		Vector3 movement = Vector3.zero;
