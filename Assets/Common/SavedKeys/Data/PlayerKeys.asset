@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68cc7f4d04dd56a4db1ab072ce2489f2, type: 3}
+  m_Name: PlayerKeys
+  m_EditorClassIdentifier: 
+  registeredKeys:
+  - reference: Equip
+    key: 101
+  - reference: Reload
+    key: 32
+  - reference: Drop
+    key: 32
+  - reference: Sprint
+    key: 32
+  - reference: ToggleSprint
+    key: 32
+  - reference: Crouch
+    key: 32
+  - reference: ToggleCrouch
+    key: 32
+  - reference: Menu
+    key: 32
+  - reference: Pause
+    key: 32
+  - reference: Jump
+    key: 32
+  - reference: Weapon1
+    key: 32
+  - reference: Weapon2
+    key: 32
+  - reference: Weapon3
+    key: 32
+  - reference: Weapon4
+    key: 32
