@@ -163,7 +163,7 @@ MonoBehaviour:
   - {fileID: 371609540}
   - {fileID: 1694761679}
   - {fileID: 464841729}
-  maxNum: 3
+  maxNum: 9
 --- !u!4 &2996737
 Transform:
   m_ObjectHideFlags: 0

@@ -15,9 +15,6 @@ EditorBuildSettings:
     path: Assets/Common/MiniMap/MiniMap_Demo.unity
     guid: 55a1545fb79b11741ac8cbc59d19ea94
   - enabled: 1
-    path: Assets/Common/Objectives/Objectives_Demo.unity
-    guid: 4033dcb851e9d494ba84dddec8180fb9
-  - enabled: 1
     path: Assets/Common/SavedKeys/SavedKeys_Demo.unity
     guid: dc2153f957e382b42a7f333497a58c8d
   - enabled: 1

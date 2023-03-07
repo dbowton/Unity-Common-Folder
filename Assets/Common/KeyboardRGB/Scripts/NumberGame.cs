@@ -17,7 +17,9 @@ public class NumberGame : MonoBehaviour
 		GenerateCode();
 		colorBlock = buttons[0].colors;
 		RGBPlayer.Instance.controller.SetButtonColor(Colors.orange);
-		RGBPlayer.Instance.registeredKeys.Add("wasd", new List<KeyCode>() { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D });
+
+		if(!RGBPlayer.Instance.registeredKeys.ContainsKey("wasd"))
+			RGBPlayer.Instance.registeredKeys.Add("wasd", new List<KeyCode>() { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D });
 	}
 
 	private void GenerateCode()
@@ -69,6 +71,8 @@ public class NumberGame : MonoBehaviour
 			if (passcode.Length == workingCode.Length)
 			{
 				workingCode = "";
+
+				ObjectiveManager.instance.Data.UpdateObjective("beat chroma game", 1);
 
 				RGBPlayer.Instance.controller.SetKeyColor(KeyCode.Alpha0, Color.yellow);
 				RGBPlayer.Instance.controller.SetKeyColor(KeyCode.Alpha1, Color.yellow);

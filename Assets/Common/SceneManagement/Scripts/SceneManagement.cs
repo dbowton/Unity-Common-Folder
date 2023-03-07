@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -7,12 +9,28 @@ public class SceneManagement : MonoBehaviour
 {
 	public static SceneManagement instance = null;
 
-	[SerializeField] GameObject fadeScreenPrefab;
-	static GameObject fadeScreen;
+	public static int SceneCount { get { return SceneManager.sceneCountInBuildSettings; } }
+
+	[SerializeField] GameObject defaultFadeScreenPrefab;
+	GameObject fadeScreenPrefab;
+	GameObject fadeScreen;
+
+	bool ready = false;
+	Timer waitTimer = null;
+
+	string tempSceneName;
+	bool fadeOut = true;
+	float totalFadeOutTime = 0f;
+	float totalFadeInTime = 0f;
+	float workingTime = 0f;
+
+	string preppedScene = null;
+
+	public UnityAction onSceneChange;
+	public UnityAction onSceneLoad;
 
 	private void Awake()
 	{
-		print("awake");
 		if (instance == null)
 		{
 			instance = this;
@@ -22,93 +40,118 @@ public class SceneManagement : MonoBehaviour
 			Destroy(this);
 	}
 
+	AsyncOperation loading = null;
+
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Escape))
+		if (loading != null)
 		{
-			LoadScene(0, 1.25f, 0.625f);
+			if (fadeScreen.TryGetComponent<ProgressScreen>(out ProgressScreen progress))
+				progress.Progress = Mathf.Min(loading.progress / 0.9f, Mathf.Min(waitTimer.GetElapsed, 1));
+
+			if (loading.progress >= 0.9f && ready)
+			{
+				loading.allowSceneActivation = true;
+				ready = false;
+			}
 		}
+
 
 		if (fadeOut && preppedScene != null)
 		{
 			if (totalFadeOutTime > 0 && workingTime == 0)
 			{
 				Destroy(fadeScreen);
-				fadeScreen = Instantiate(fadeScreenPrefab);
+
+				if(fadeScreenPrefab)
+					fadeScreen = Instantiate(fadeScreenPrefab);
+				else
+					fadeScreen = Instantiate(defaultFadeScreenPrefab);
+
+				fadeScreenPrefab = null;
 				DontDestroyOnLoad(fadeScreen);
 			}
 
 			workingTime += Time.deltaTime;
+			foreach (var image in fadeScreen.GetComponentsInChildren<Image>())
+			{
+				Color color = image.color;
+				color.a = Mathf.Min(workingTime / totalFadeOutTime, 1);
+				image.color = color;
+			}
+
 			if (workingTime >= totalFadeOutTime)
 			{
+				onSceneLoad?.Invoke();
+
 				fadeOut = false;
-				SceneManager.LoadScene(preppedScene);
+				loading = SceneManager.LoadSceneAsync(preppedScene);
+				loading.allowSceneActivation = false;
+				tempSceneName = preppedScene;
 				preppedScene = null;
 				workingTime = 0;
 				totalFadeOutTime = 0;
 			}
-			else
-			{
-				Color color = fadeScreen.GetComponentInChildren<Image>().color;
-				color.a = Mathf.Min(workingTime / totalFadeOutTime, 1);
-				fadeScreen.GetComponentInChildren<Image>().color = color;
-			}
 		}
-		else if(totalFadeInTime > 0)
+		else if(loading != null && loading.isDone && totalFadeInTime > 0)
 		{
 			if (fadeScreen == null)
-				fadeScreen = Instantiate(fadeScreenPrefab);
+			{
+				if (fadeScreenPrefab)
+					fadeScreen = Instantiate(fadeScreenPrefab);
+				else
+					fadeScreen = Instantiate(defaultFadeScreenPrefab);
+
+				fadeScreenPrefab = null;
+			}
 
 			workingTime += Time.deltaTime;
 			if (workingTime >= totalFadeInTime)
 			{
+				ObjectiveManager.instance.Data.UpdateObjective("open " + tempSceneName, 1);
+				tempSceneName = "";
 				Destroy(fadeScreen);
+				loading = null;
 				fadeOut = true;
 				totalFadeInTime = 0;
 			}
 			else
 			{
-				Color color = fadeScreen.GetComponentInChildren<Image>().color;
-				color.a = 1 - Mathf.Min(workingTime / totalFadeInTime, 1);
-				fadeScreen.GetComponentInChildren<Image>().color = color;
+				foreach (var image in fadeScreen.GetComponentsInChildren<Image>())
+				{
+					Color color = image.color;
+					color.a = 1 - Mathf.Min(workingTime / totalFadeInTime, 1);
+					image.color = color;
+				}
 			}
 		}
 	}
 
-	static bool fadeOut = true;
-	static float totalFadeOutTime = 0f;
-	static float totalFadeInTime = 0f;
-	static float workingTime = 0f;
-
-	static string preppedScene = null;
-
-	public static void LoadScene(string sceneName, float fadeOut = 0f, float fadeIn = 0f)
+	public void LoadScene(string sceneName, float fadeOut = 0f, float fadeIn = 0f, GameObject fadescreen = null, float minTime = 0f)
 	{
 		if (preppedScene != null) return;
+		onSceneChange?.Invoke();
 		if (fadeOut == 0)
 			Destroy(fadeScreen);
-		SceneManagement.fadeOut = true;
+
+		ready = false;
+		if (minTime == 0)
+			ready = true;
+		else
+			waitTimer = new Timer(minTime, () => ready = true, true);
+
+
+		fadeScreenPrefab = fadescreen;
+		this.fadeOut = true;
 		workingTime = 0;
 		totalFadeOutTime = fadeOut;
 		totalFadeInTime = fadeIn;
 		preppedScene = sceneName;
 	}
 
-	public static void LoadScene(int index, float fadeOut = 0f, float fadeIn = 0f)
+	public void LoadScene(int index, float fadeOut = 0f, float fadeIn = 0f, GameObject fadescreen = null, float minTime = 0f)
 	{
-		if (preppedScene != null) return;
-		if(fadeOut == 0)
-			Destroy(fadeScreen);
-		SceneManagement.fadeOut = true;
-		workingTime = 0;
-		totalFadeOutTime = fadeOut;
-		totalFadeInTime = fadeIn;
-		preppedScene = GetSceneName(index);
-	}
-
-	public static int GetSceneCount() 
-	{
-		return SceneManager.sceneCountInBuildSettings;
+		LoadScene(GetSceneName(index), fadeOut, fadeIn, fadescreen, minTime);
 	}
 
 	public static List<string> GetSceneNames()

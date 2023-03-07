@@ -22,7 +22,6 @@ public class ObjectiveData : ScriptableObject
 	}
 
 	[SerializeField] List<Objective> objectives = new List<Objective>();
-
 	private void OnValidate()
 	{
 		foreach (var o in objectives)
@@ -47,13 +46,12 @@ public class ObjectiveData : ScriptableObject
 				{
 					o.onComplete?.Invoke();
 
-					ObjectiveManager.instance.ObjectiveComplete(key);
-
 					if(o.sprite != null) 
 					{
 						Destroy(objectiveUI);
 
 						objectiveUI = Instantiate(objectiveUIPrefab);
+						DontDestroyOnLoad(objectiveUI);
 						ObjectivePrefabInfo info = objectiveUI.GetComponent<ObjectivePrefabInfo>();
 						info.image.sprite = o.sprite;
 						info.title.text = o.displayName;
@@ -73,6 +71,15 @@ public class ObjectiveData : ScriptableObject
 				return (o.current >= o.goal);
 
 		return false;
+	}
+
+	public bool AllComplete()
+	{
+		foreach (var o in objectives)
+			if (o.current < o.goal)
+				return false;
+
+		return true;
 	}
 
 	public void ClearObjectives()

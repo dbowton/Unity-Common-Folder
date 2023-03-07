@@ -9,13 +9,17 @@ public class ObjectiveManager : MonoBehaviour
 	private void Awake()
 	{
 		if (instance == null)
+		{
 			instance = this;
+			DontDestroyOnLoad(gameObject);
+		}
 		else
 			Destroy(this);
 	}
 
-	public void ObjectiveComplete(string key)
+	private void Start()
 	{
-		print("Objective: " + key + " - Complete");
+		if (instance.Data.AllComplete())
+			instance.Data.RestartObjectives();
 	}
 }
